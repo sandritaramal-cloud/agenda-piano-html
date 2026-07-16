@@ -1,0 +1,55 @@
+<div style="display:flex; justify-content:center; padding:1rem 0;">
+<style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap');</style>
+<div data-document-role="page" data-label="Calendario del curso - pagina 1" style="width:340px; aspect-ratio:148/210; background:#FBF8F6; border-radius:14px; border:0.5px solid var(--border); padding:22px 16px 16px 24px; font-family:'Quicksand',sans-serif; position:relative; overflow:hidden; box-sizing:border-box; display:flex; flex-direction:column;">
+
+  <p style="margin:0 0 2px; font-size:9px; letter-spacing:1px; color:#8A6E80; font-weight:500; flex-shrink:0;">CALENDARIO DEL CURSO &middot; 1/2</p>
+  <h1 style="margin:0 0 6px; font-size:15px; font-weight:700; color:#4A2F42; flex-shrink:0;">Septiembre &ndash; Enero</h1>
+
+  <div id="cal1" style="display:grid; grid-template-columns:repeat(5,1fr); flex:1;"></div>
+
+  <div style="display:flex; gap:10px; margin-top:5px; flex-shrink:0;">
+    <div style="display:flex; align-items:center; gap:3px;"><span style="width:7px;height:7px;background:#EEDFE8;display:inline-block;border-radius:1px;"></span><span style="font-size:6.5px;color:#8A6E80;">Fin de semana</span></div>
+    <div style="display:flex; align-items:center; gap:3px;"><span style="width:7px;height:7px;background:#B98CA6;display:inline-block;border-radius:1px;"></span><span style="font-size:6.5px;color:#8A6E80;">Festivo / vacaciones</span></div>
+  </div>
+</div>
+</div>
+<script>
+(function(){
+  const SEQ = ['L','M','X','J','V','S','D'];
+  const months = [
+    {name:'Septiembre', startIdx:1, days:30, specials:[15], vac:[]},
+    {name:'Octubre', startIdx:3, days:31, specials:[], vac:[]},
+    {name:'Noviembre', startIdx:6, days:30, specials:[2], vac:[]},
+    {name:'Diciembre', startIdx:1, days:31, specials:[7,8], vac:[[24,31]]},
+    {name:'Enero', startIdx:4, days:31, specials:[], vac:[[1,8]]}
+  ];
+  const maxDays = 31;
+  const container = document.getElementById('cal1');
+  let html = '';
+  // header row
+  months.forEach(m=>{
+    html += `<div style="font-size:8px; font-weight:700; color:#6B4C63; text-align:center; padding:1px 0 2px; border-bottom:1px solid #6B4C63;">${m.name}</div>`;
+  });
+  for(let r=1; r<=maxDays; r++){
+    months.forEach(m=>{
+      if(r>m.days){
+        html += `<div style="height:9.5px;"></div>`;
+        return;
+      }
+      const idx = (m.startIdx + r - 1) % 7;
+      const letter = SEQ[idx];
+      const isWeekend = (letter==='S' || letter==='D');
+      let isSpecial = m.specials.includes(r);
+      if(!isSpecial){
+        for(const range of m.vac){ if(r>=range[0] && r<=range[1]){ isSpecial = true; break; } }
+      }
+      let bg = 'transparent';
+      let color = '#4A2F42';
+      if(isSpecial){ bg = '#B98CA6'; color = '#FFFFFF'; }
+      else if(isWeekend){ bg = '#EEDFE8'; color = '#6B4C63'; }
+      html += `<div style="height:9.5px; box-sizing:border-box; font-size:6.3px; line-height:9.5px; color:${color}; background:${bg}; padding:0 2px; border-bottom:0.4px solid #E7D9E2;">${letter}${r}</div>`;
+    });
+  }
+  container.innerHTML = html;
+})();
+</script>
